@@ -1,163 +1,97 @@
-📐 3. Ecuaciones de Balance de Energía para Tanque TES de Lecho Empacado
+## 🔥 5. Importancia de buscar alternativas a la alúmina como medio de almacenamiento térmico
 
-Este documento detalla el modelo acoplado de transferencia de calor utilizado para simular el comportamiento térmico de un tanque de Almacenamiento de Energía Térmica (TES) de lecho empacado (Packed Bed TES), implementado y resuelto numéricamente con OpenTerrace.
+Actualmente, la **alúmina (Al₂O₃)** es uno de los materiales más utilizados en sistemas de **almacenamiento térmico sensible (TES)**, especialmente en:
 
-Se utiliza la alúmina como material de referencia para las partículas sólidas, y todos los materiales se comparan bajo un conjunto de condiciones idénticas de operación.
+- Plantas solares termoeléctricas (CSP)  
+- Lechos empacados de alta temperatura  
+- Relleno cerámico para regeneradores  
+- Sistemas de respaldo térmico industrial  
 
-🔥 3.1. Balance de Energía del Fluido (Fase de Carga)
+Sin embargo, su uso presenta **tres problemas críticos** a nivel internacional y particularmente para Chile:
 
-El fluido (agua) fluye en la dirección axial ($z$) e intercambia calor con las partículas sólidas. El modelo considera la convección, la transferencia de calor convectiva con el sólido y la dispersión/difusión axial.
+---
 
-Ecuación Diferencial Parcial
+### 1️⃣ Alta dependencia de importación
 
-$$\varepsilon \,\rho_f c_{p,f}\,\frac{\partial T_f}{\partial t}
-+\varepsilon \,\rho_f c_{p,f}\,u\,\frac{\partial T_f}{\partial z}
-=
-\frac{\partial}{\partial z}\left( k_{\mathrm{ax}} \frac{\partial T_f}{\partial z} \right)
-- a_s\, h \left(T_f - T_s^{\mathrm{surf}}\right)$$
+Chile **no produce alúmina**.  
+Toda la alúmina utilizada para procesos térmicos, refractarios y cerámicos debe importarse desde:
 
-Donde:
+- **Australia**  
+- **Brasil**  
+- **China**
 
-Símbolo
+**Volumen global:**  
+El mercado industrial de alúmina supera los **130 millones de toneladas anuales** (USGS, Alumina & Bauxite Statistics).  
+Una fracción significativa se destina a **cerámicos y materiales refractarios**, los mismos que usa la industria TES.
 
-Descripción
+**Para aplicaciones de TES:**  
+Un solo tanque de lecho empacado de tamaño industrial (≈ 50–200 MWh térmicos) requiere típicamente:
 
-Unidad
+- **200 a 2.000 toneladas de alúmina**, dependiendo de la geometría y temperatura de operación.
 
-$\varepsilon$
+Esto significa que proyectos termosolares en Chile dependen completamente de **importar cientos de toneladas** de material.
 
-Porosidad del lecho
+---
 
--
+### 2️⃣ Costo elevado y volátil
 
-$\rho_f c_{p,f}$
+El precio internacional de la alúmina de grado industrial fluctúa entre:
 
-Capacidad calorífica volumétrica del fluido
+- **300 y 600 USD/ton** (datos de mercado 2023–2024, USGS y fuentes comerciales).
 
-$\mathrm{J/(m^3\,K)}$
+En cambio, materiales chilenos como:
 
-$u$
+- **granito**,  
+- **basalto**,  
+- **gabro**,  
+- **diorita**,  
+- **escoria de cobre**,
 
-Velocidad superficial del fluido
+tienen costos **entre 10 y 40 USD/ton**, dependiendo de la región.
 
-$\mathrm{m/s}$
+Esto implica que reemplazar alúmina por materiales nacionales puede reducir el costo del medio de almacenamiento entre **80 % y 95 %**.
 
-$k_{\mathrm{ax}}$
+---
 
-Conductividad/dispersión axial efectiva
+### 3️⃣ Impacto en sostenibilidad y huella de carbono
 
-$\mathrm{W/(m\,K)}$
+La producción de alúmina es altamente intensiva en energía:
 
-$a_s$
+- Se requieren **12–15 GJ** por tonelada.  
+- Emite hasta **1.5 toneladas de CO₂** por tonelada producida.  
 
-Área específica sólido–fluido por volumen de lecho
+En contraste:
 
-$\mathrm{m^2/m^3}$
+- Las **rocas ígneas chilenas** (granito, basalto, gabro, diorita) tienen huella casi nula porque solo requieren **extracción y trituración**.  
+- La **escoria de cobre** es un **subproducto minero**, por lo que usarla implica **economía circular** y valorización de residuos.
 
-$h$
+---
 
-Coeficiente convectivo fluido–sólido
+## 🎯 ¿Cómo contribuye este proyecto a resolver esta brecha?
 
-$\mathrm{W/(m^2\,K)}$
+Este proyecto cuantifica, mediante un modelo numérico reproducible, si materiales chilenos —como el **granito**, **basalto**, **escoria de cobre**, **magnetita** y otros— pueden **igualar el desempeño térmico de la alúmina** en un sistema realista de TES en lecho empacado.
 
-$T_f$
+Al evaluar:
 
-Temperatura del fluido
+- perfiles axiales de transferencia térmica  
+- temperatura de salida en el tiempo  
+- eficiencia de almacenamiento  
 
-$\mathrm{^\circ C}$
+se puede determinar qué materiales **son técnicamente viables**, **económicamente competitivos** y **ambientalmente más sostenibles** que la alúmina importada.
 
-$T_s^{\mathrm{surf}}$
+---
 
-Temperatura de la superficie de la partícula sólida
+## 📌 Conclusión
 
-$\mathrm{^\circ C}$
+El reemplazo de la alúmina en Chile no es solo un tema técnico:  
+es una **brecha tecnológica**, **económica** y **ambiental**.
 
-Condiciones de Borde (Boundary Conditions, BCs)
+Buscar alternativas locales significa:
 
-El tanque opera bajo condiciones de temperatura de entrada constante y flujo de calor nulo en la salida ($z=H$).
+- reducir la dependencia de materiales extranjeros  
+- bajar drásticamente los costos del TES  
+- habilitar proyectos solares térmicos más accesibles  
+- reutilizar residuos industriales  
+- fortalecer la autonomía energética del país  
 
-$$T_f(0,t)=80^\circ\mathrm{C}$$
-
-$$\left.\frac{\partial T_f}{\partial z}\right|_{z=H}=0$$
-
-Condición Inicial (Initial Condition, IC)
-
-La temperatura inicial uniforme del fluido es:
-
-$$T_f(z,0)=20^\circ\mathrm{C}$$
-
-🪨 3.2. Balance de Energía del Sólido (Partícula Esférica Hueca)
-
-El sólido se modela como una partícula esférica hueca, y su transferencia de calor es dominada por la conducción radial transitoria. Esta aproximación permite un cálculo más preciso del gradiente de temperatura dentro de la partícula, crucial para evaluar el almacenamiento interno de energía.
-
-Ecuación Diferencial Parcial
-
-$$\rho_s c_{p,s}\,\frac{\partial T_s}{\partial t}
-=
-\frac{1}{r^2}
-\frac{\partial}{\partial r}
-\left( k_s r^2 \frac{\partial T_s}{\partial r} \right)$$
-
-Condiciones de Borde (BCs)
-
-Radio interno ($R_{\mathrm{in}}$, Aislado): Se asume una condición de simetría térmica (flujo de calor nulo) en el centro de la cavidad hueca.
-
-$$\left.\frac{\partial T_s}{\partial r}\right|_{r=R_{\mathrm{in}}}=0$$
-
-Superficie externa ($R_{\mathrm{out}}$, Interfaz Fluido–Sólido): El calor convectivo transferido desde el fluido se iguala al flujo de calor conductivo que entra a la partícula (Tercer tipo de BC, o Robin).
-
-$$-k_s 
-\left.\frac{\partial T_s}{\partial r}\right|_{r=R_{\mathrm{out}}}
-=
-h \left(T_s(R_{\mathrm{out}},t) - T_f(z,t)\right)$$
-
-Condición Inicial (IC)
-
-La temperatura inicial uniforme del sólido es:
-
-$$T_s(r,0)=20^\circ\mathrm{C}$$
-
-🔗 3.3. Acoplamiento Fluido–Sólido
-
-El acoplamiento entre las dos ecuaciones se realiza mediante el término de intercambio de calor convectivo en la interfaz ($q''$).
-
-Este flujo de calor por unidad de área es:
-
-$$q'' = h\,(T_f - T_s^{\mathrm{surf}})$$
-
-En la ecuación del fluido, el término $- a_s\, h \left(T_f - T_s^{\mathrm{surf}}\right)$ representa la pérdida de energía debido a la transferencia de calor hacia las partículas sólidas.
-
-En la condición de borde de la superficie externa del sólido, este mismo flujo representa la ganancia de energía que impulsa la conducción radial dentro de la partícula.
-
-🧮 3.4. Métodos Numéricos Utilizados
-
-La implementación de OpenTerrace utiliza discretización espacial y temporal específica para cada término del balance.
-
-Esquema Numérico
-
-Aplicación
-
-Término Específico
-
-Upwind 1D
-
-Fluido
-
-Convección ($\varepsilon \,\rho_f c_{p,f}\,u\,\frac{\partial T_f}{\partial z}$)
-
-Diferencia Central 1D
-
-Fluido y Sólido
-
-Difusión/Conducción (e.g., $\frac{\partial}{\partial z}\left( k_{\mathrm{ax}} \frac{\partial T_f}{\partial z} \right)$)
-
-Integración Explícita
-
-Fluido y Sólido
-
-Avance Temporal
-
-El paso de tiempo utilizado en la simulación es constante, asegurando estabilidad a través de restricciones tipo CFL/Fourier manejadas internamente por el solver:
-
-$$\Delta t = 0.05\ \mathrm{s}$$
-
+Este proyecto entrega las **primeras comparaciones cuantitativas** basadas en simulación reproducible entre alúmina y materiales chilenos, mostrando que la sustitución es **técnica y económicamente posible**.
