@@ -1,96 +1,163 @@
-# IIQ3843
-# TES en Lecho Empacado: Benchmark de Materiales con Alúmina como Referencia
+📐 3. Ecuaciones de Balance de Energía para Tanque TES de Lecho Empacado
 
-**Objetivo.** Evaluar el desempeño térmico de distintos **sólidos locales** en un **tanque de almacenamiento térmico (TES) de lecho empacado**, usando **alúmina (Al₂O₃)** como **material de referencia** y comparador base. El estudio cuantifica cómo cada material transfiere y almacena calor cuando un **fluido (agua)** circula a través del lecho.
+Este documento detalla el modelo acoplado de transferencia de calor utilizado para simular el comportamiento térmico de un tanque de Almacenamiento de Energía Térmica (TES) de lecho empacado (Packed Bed TES), implementado y resuelto numéricamente con OpenTerrace.
 
-**Brecha que aborda.** En Chile, la mayoría de medios para TES son **importados** (p. ej., alúmina). Este proyecto crea una **metodología reproducible** para comparar **materiales locales** (granito, basalto, escoria de cobre, etc.) bajo **idénticas condiciones**, entregando evidencia para sustituir materiales importados cuando sea viable.
+Se utiliza la alúmina como material de referencia para las partículas sólidas, y todos los materiales se comparan bajo un conjunto de condiciones idénticas de operación.
 
----
+🔥 3.1. Balance de Energía del Fluido (Fase de Carga)
 
-## 1. Metodología (resumen)
+El fluido (agua) fluye en la dirección axial ($z$) e intercambia calor con las partículas sólidas. El modelo considera la convección, la transferencia de calor convectiva con el sólido y la dispersión/difusión axial.
 
-Se utiliza **[OpenTerrace]** para resolver, en 1D axial, el **acoplamiento fluido–sólido** en un lecho empacado:
+Ecuación Diferencial Parcial
 
-- **Fase fluido (agua):** advección + difusión/disp. axial + intercambio convectivo con el sólido.  
-- **Fase sólida (partícula esférica hueca):** conducción radial transitoria + condición convectiva en la superficie.
-
-**Caso de referencia:** Alúmina.  
-Sobre esa base, se modifican **únicamente** las propiedades del sólido para cada material comparado.
-
----
-
-## 2. Ecuaciones de energía
-
-### 2.1. Fluido (eje axial \(z\))
-\[
-\underbrace{\varepsilon\,\rho_f c_{p,f}\,\frac{\partial T_f}{\partial t}}_{\text{almacenamiento}}
-+\underbrace{\varepsilon\,\rho_f c_{p,f}\,u\,\frac{\partial T_f}{\partial z}}_{\text{convección}}
+$$\varepsilon \,\rho_f c_{p,f}\,\frac{\partial T_f}{\partial t}
++\varepsilon \,\rho_f c_{p,f}\,u\,\frac{\partial T_f}{\partial z}
 =
-\underbrace{\frac{\partial}{\partial z}\!\left(k_{\mathrm{ax}}\frac{\partial T_f}{\partial z}\right)}_{\text{difusión/disp. axial}}
--\underbrace{a_s\,h\,(T_f - T_s^{\mathrm{surf}})}_{\text{intercambio fluido–sólido}}
-\]
+\frac{\partial}{\partial z}\left( k_{\mathrm{ax}} \frac{\partial T_f}{\partial z} \right)
+- a_s\, h \left(T_f - T_s^{\mathrm{surf}}\right)$$
 
-- \(\varepsilon\): porosidad del lecho.  
-- \(u\): velocidad superficial (definida por el caudal másico y la sección).  
-- \(k_{\mathrm{ax}}\): conductividad/dispersion axial efectiva del fluido.  
-- \(a_s\): área específica sólido/volumen de lecho (p.ej. esferas: \(a_s \approx 6(1-\varepsilon)/d_p\)).  
-- \(h\): coeficiente convectivo fluido–sólido.  
-- \(T_s^{\mathrm{surf}}\): temperatura del sólido en la superficie de la partícula.
+Donde:
 
-**Condiciones (caso base):**  
-Entrada \(z=0\): \(T_f=80^\circ\mathrm{C}\).  
-Salida \(z=H\): \(\partial T_f/\partial z=0\).  
-Inicial: \(T_f(z,0)=20^\circ\mathrm{C}\).
+Símbolo
 
-### 2.2. Sólido (radio \(r\) en partícula esférica hueca)
-\[
-\rho_s c_{p,s}\,\frac{\partial T_s}{\partial t}
+Descripción
+
+Unidad
+
+$\varepsilon$
+
+Porosidad del lecho
+
+-
+
+$\rho_f c_{p,f}$
+
+Capacidad calorífica volumétrica del fluido
+
+$\mathrm{J/(m^3\,K)}$
+
+$u$
+
+Velocidad superficial del fluido
+
+$\mathrm{m/s}$
+
+$k_{\mathrm{ax}}$
+
+Conductividad/dispersión axial efectiva
+
+$\mathrm{W/(m\,K)}$
+
+$a_s$
+
+Área específica sólido–fluido por volumen de lecho
+
+$\mathrm{m^2/m^3}$
+
+$h$
+
+Coeficiente convectivo fluido–sólido
+
+$\mathrm{W/(m^2\,K)}$
+
+$T_f$
+
+Temperatura del fluido
+
+$\mathrm{^\circ C}$
+
+$T_s^{\mathrm{surf}}$
+
+Temperatura de la superficie de la partícula sólida
+
+$\mathrm{^\circ C}$
+
+Condiciones de Borde (Boundary Conditions, BCs)
+
+El tanque opera bajo condiciones de temperatura de entrada constante y flujo de calor nulo en la salida ($z=H$).
+
+$$T_f(0,t)=80^\circ\mathrm{C}$$
+
+$$\left.\frac{\partial T_f}{\partial z}\right|_{z=H}=0$$
+
+Condición Inicial (Initial Condition, IC)
+
+La temperatura inicial uniforme del fluido es:
+
+$$T_f(z,0)=20^\circ\mathrm{C}$$
+
+🪨 3.2. Balance de Energía del Sólido (Partícula Esférica Hueca)
+
+El sólido se modela como una partícula esférica hueca, y su transferencia de calor es dominada por la conducción radial transitoria. Esta aproximación permite un cálculo más preciso del gradiente de temperatura dentro de la partícula, crucial para evaluar el almacenamiento interno de energía.
+
+Ecuación Diferencial Parcial
+
+$$\rho_s c_{p,s}\,\frac{\partial T_s}{\partial t}
 =
-\frac{1}{r^2}\frac{\partial}{\partial r}\left(k_s\,r^2\,\frac{\partial T_s}{\partial r}\right)
-\]
+\frac{1}{r^2}
+\frac{\partial}{\partial r}
+\left( k_s r^2 \frac{\partial T_s}{\partial r} \right)$$
 
-- Borde interno \(r=R_{\text{in}}\): \(\partial T_s/\partial r = 0\) (aislado).  
-- Superficie \(r=R_{\text{out}}\) (interfaz con fluido):
-\[
--\,k_s\,\left.\frac{\partial T_s}{\partial r}\right|_{R_{\text{out}}}
+Condiciones de Borde (BCs)
+
+Radio interno ($R_{\mathrm{in}}$, Aislado): Se asume una condición de simetría térmica (flujo de calor nulo) en el centro de la cavidad hueca.
+
+$$\left.\frac{\partial T_s}{\partial r}\right|_{r=R_{\mathrm{in}}}=0$$
+
+Superficie externa ($R_{\mathrm{out}}$, Interfaz Fluido–Sólido): El calor convectivo transferido desde el fluido se iguala al flujo de calor conductivo que entra a la partícula (Tercer tipo de BC, o Robin).
+
+$$-k_s 
+\left.\frac{\partial T_s}{\partial r}\right|_{r=R_{\mathrm{out}}}
 =
-h\left(T_s(R_{\text{out}},t)-T_f(z,t)\right)
-\]
+h \left(T_s(R_{\mathrm{out}},t) - T_f(z,t)\right)$$
 
-Inicial: \(T_s(r,0)=20^\circ\mathrm{C}\).
+Condición Inicial (IC)
 
-### 2.3. Esquemas numéricos
-- **Convección (fluido):** *upwind* 1D.  
-- **Difusión (fluido y sólido):** diferencia central 1D.  
-- **Temporal:** integración transitoria con \(\Delta t\) fijo.
+La temperatura inicial uniforme del sólido es:
 
-> Estas ecuaciones se implementan vía configuraciones de OpenTerrace en `src/sim_alumina.py`.
+$$T_s(r,0)=20^\circ\mathrm{C}$$
 
----
+🔗 3.3. Acoplamiento Fluido–Sólido
 
-## 3. Parámetros del caso base (Alúmina)
+El acoplamiento entre las dos ecuaciones se realiza mediante el término de intercambio de calor convectivo en la interfaz ($q''$).
 
-- **Geometría del tanque:** cilindro 1D, \(D=0.30\ \mathrm{m}\), \(H=3.0\ \mathrm{m}\).  
-- **Fluido:** agua; \( \dot m = 0.04\ \mathrm{kg/s}\).  
-- **Porosidad del lecho:** \(\varepsilon = 0.40\).  
-- **Condiciones T:** entrada \(80^\circ\mathrm{C}\), inicial \(20^\circ\mathrm{C}\).  
-- **Partícula sólida:** esfera hueca, \(R_\mathrm{in}=5\ \mathrm{mm}\), \(R_\mathrm{out}=25\ \mathrm{mm}\).  
-- **Acoplamiento:** \(h=200\ \mathrm{W/m^2K}\) (constante).  
-- **Tiempo simulado:** \(t_\mathrm{end}=100\ \mathrm{min}\), \(\Delta t=0.05\ \mathrm{s}\).
+Este flujo de calor por unidad de área es:
 
-> Para otros materiales, se cambian **propiedades del sólido** ( \(k_s, \rho_s, c_{p,s}\) ) manteniendo el resto igual, para un **benchmark justo** comparado con alúmina.
+$$q'' = h\,(T_f - T_s^{\mathrm{surf}})$$
 
----
+En la ecuación del fluido, el término $- a_s\, h \left(T_f - T_s^{\mathrm{surf}}\right)$ representa la pérdida de energía debido a la transferencia de calor hacia las partículas sólidas.
 
-## 4. Cómo reproducir
+En la condición de borde de la superficie externa del sólido, este mismo flujo representa la ganancia de energía que impulsa la conducción radial dentro de la partícula.
 
-### 4.1. Instalación
-```bash
-python -m venv .venv
-# Windows
-.\.venv\Scripts\activate
-# macOS/Linux
-source .venv/bin/activate
+🧮 3.4. Métodos Numéricos Utilizados
 
-pip install -r requirements.txt
+La implementación de OpenTerrace utiliza discretización espacial y temporal específica para cada término del balance.
+
+Esquema Numérico
+
+Aplicación
+
+Término Específico
+
+Upwind 1D
+
+Fluido
+
+Convección ($\varepsilon \,\rho_f c_{p,f}\,u\,\frac{\partial T_f}{\partial z}$)
+
+Diferencia Central 1D
+
+Fluido y Sólido
+
+Difusión/Conducción (e.g., $\frac{\partial}{\partial z}\left( k_{\mathrm{ax}} \frac{\partial T_f}{\partial z} \right)$)
+
+Integración Explícita
+
+Fluido y Sólido
+
+Avance Temporal
+
+El paso de tiempo utilizado en la simulación es constante, asegurando estabilidad a través de restricciones tipo CFL/Fourier manejadas internamente por el solver:
+
+$$\Delta t = 0.05\ \mathrm{s}$$
 
